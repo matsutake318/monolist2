@@ -10,8 +10,13 @@ class OwnershipsController < ApplicationController
 
     # itemsテーブルに存在しない場合は楽天のデータを登録する。
     if @item.new_record?
-      # TODO 商品情報の取得 RakutenWebService::Ichiba::Item.search を用いてください
-      items = {}
+
+      # begin
+       # TODO 商品情報の取得 RakutenWebService::Ichiba::Item.search を用いてください
+      # response = RakutenWebService::Ichiba::Item.search(params[:item_code], response_group: 'Medium', country: 'jp')
+      # end
+      
+      items = RakutenWebService::Ichiba::Item.search(itemCode: @item.item_code)
 
       item                  = items.first
       @item.title           = item['itemName']
@@ -21,20 +26,34 @@ class OwnershipsController < ApplicationController
       @item.detail_page_url = item['itemUrl']
       @item.save!
     end
-
-    # TODO ユーザにwant or haveを設定する
-    # params[:type]の値にHaveボタンが押された時には「Have」,
-    # Wantボタンが押された時には「Want」が設定されています。
-    
-
+   
+    if params[:type] == "Have"
+      current_user.have @item
+    elsif params[:type] == "Want"
+      current_user.want @item
+    end
   end
 
   def destroy
     @item = Item.find(params[:item_id])
-
-    # TODO 紐付けの解除。 
-    # params[:type]の値にHave itボタンが押された時には「Have」,
-    # Want itボタンが押された時には「Want」が設定されています。
-
+    
+    if params[:type] == "Have"
+      current_user.unhave @item
+    elsif params[:type] == "Want"
+      current_user.unwant @item
+    end
   end
 end
+
+
+  # create_table "items", force: :cascade do |t|
+  #   t.string   "title"
+  #   t.string   "description"
+  #   t.string   "detail_page_url"
+  #   t.string   "small_image"
+  #   t.string   "medium_image"
+  #   t.string   "large_image"
+  #   t.datetime "created_at",      null: false
+  #   t.datetime "updated_at",      null: false
+  #   t.string   "item_code"
+  # end
