@@ -1,15 +1,29 @@
+<% content_for :header do %>
+  <title>
+    <%= @item.title %> - Monolist
+  </title>
+  <meta name="description" content="<%= @item.title %>に関する情報です。この商品を欲しい人、持ってる人を表示しています。">
+  <meta name="keywords" content="Monolist,<%= "#{@item.title}"%>">
+<% end %>
+
 <div class="container">
   <div class="container-inner inner-sm clearfix">
     <div class="item-single-main">
       <div class="image">
         <div class="img-wrap">
-          <% #TODO 商品イメージ %>
-          <%= image_tag("no-image.png" , alt: @item.title) %>
+          <% if @item.large_image.present? %>
+          <%# if item['mediumImageUrls'].present? %>
+          <%# if @item.medium_image.present? %>
+            <%#= image_tag(item['mediumImageUrls'].first['imageUrl'].gsub('?_ex=128x128', '') ,
+                  alt: @item.title) %>
+            <%= image_tag(@item.large_image , alt: @item.title) %>
+          <% else %>
+            <%= image_tag("no-image.png" , alt: @item.title) %>
+          <% end %>
         </div>
       </div>
       <div class="title">
-        <% #TODO 商品タイトル %>
-        仮タイトル
+        <%= @item.title %>
       </div>
       <%= render 'action' , item: @item %>
     </div>
@@ -17,19 +31,26 @@
       <div class="side-box">
         <h4 class="side-box-title">Haveしたユーザー</h4>
         <div class="side-box-body">
-          <% # TODO Haveしたユーザー一覧 %>
-
+          <% @item.have_users.each do |user| %>
+            <%= link_to user do %>
+              <span class="gravatar"><%= gravatar_for user, size: 24 %></span>
+            <% end %>
+          <% end %>
         </div>
       </div>
       <div class="side-box">
         <h4 class="side-box-title">Wantしたユーザー</h4>
         <div class="side-box-body">
-          <% # TODO Wantしたユーザー一覧 %>
+          <% @item.want_users.each do |user| %>
+            <%= link_to user do %>
+              <span class="gravatar"><%= gravatar_for user, size: 24 %></span>
+            <% end %>
+          <% end %>
         </div>
       </div>
       <div class="text-center">
         <% #TODO 正しいリンク先に %>
-        <%= link_to('楽天詳細ページへ', '#') %>
+        <%= link_to('楽天詳細ページへ', @item.detail_page_url, {target: "_blank"}) %>
       </div>
     </div>
   </div>
