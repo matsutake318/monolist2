@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   end
   
   def show
-    @items = @user.items.group('items.id')
+    @items = @user.items.group('items.id')#.page(params[:page]).per(20)
   end
 
   private

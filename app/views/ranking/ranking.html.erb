@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="container-inner inner-default clearfix">
+    <h1><%= @title %></h1>
+    <% @items.each.with_index(1) do |item , index| %>
+      <div class="item-box">
+        <div class="image">
+          <div class="img-wrap">
+
+            <% if item.medium_image.present? %>
+              <%= image_tag(item.medium_image , alt: item.title) %>
+            <% else %>
+              <%= image_tag("no-image.png" , alt: item.title) %>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="detail">
+          <div class="title">
+            <span class="ranking-label label label-info">
+              <%= index %>位 (<%= @counts[item.id] %>)
+            </span>
+            <%= link_to item.title , item %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
